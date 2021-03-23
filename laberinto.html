@@ -1,0 +1,226 @@
+<html>
+    <head>
+        <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    </head>
+    <body>
+      <link href="estilo.css" rel="stylesheet" type="text/css">
+      <div id="root"></div>
+      <script type="text/babel">
+
+        const htmlRoot = document.getElementById('root')
+
+        const Pared = () => {
+          const style = {
+            backgroundImage: `url("pared.png")`,
+            backgroundSize: '100% 100%',
+
+          }
+          return <div style={style} />
+        }
+
+        const Meta = () => {
+          const style = {
+            backgroundImage: `url("meta.png")`,
+            backgroundSize: '100% 100%',
+
+          }
+
+          const estilodos={
+            backgroundImage: `url("piso.png")`,
+            backgroundSize: '100% 100%',
+          }
+          return <div style={style} />
+        }
+
+        const Jugador =({ posicionX, posicionY, imagenlink }) => {
+          const style = {
+            position:'relative',
+            gridColumnStart: posicionX,
+            gridRowStart: posicionY,
+            backgroundSize: '100% 100%',
+            backgroundImage: 'url('+imagenlink+')',
+          }
+          return<div style={style} />
+        }
+
+        const Camino = () => {
+          const style = {
+            backgroundImage: `url("piso.png")`,
+            backgroundSize: '100% 100%',
+          }
+          return <div style={style} />
+        }
+
+        const Maze = () => {
+
+          const nivel = window.sessionStorage.getItem("nivelfacil")
+
+          const estilo={
+            width: '75%',
+            height: '75%',
+            display:'grid',
+            gridTemplateRows: `repeat( ${nivel * 2 + 1}, auto)`,
+            gridTemplateColumns: `repeat( ${nivel * 3 + 1}, auto )`,
+            position:'absolute',
+          }
+
+          const rowStyles = {
+            position:'relative',
+            width: '100%',
+            height: '100%',
+            display:'flex',
+            backgroundImage: `url("fondojuego.jpg")`,
+            backgroundSize: '100% 100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }
+
+          const [mazeData, setMazeData] = React.useState([])
+          const [imagenactual, setimagen] = React.useState('estadoinicial.png')
+          const [posicionactualX, setposicionX] = React.useState(2)
+          const [posicionactualY, setposicionY] = React.useState(2)
+          const [contador, setcontador] = React.useState(0)
+
+          const handleKeyDown = (event) => {
+            if(mazeData.length !=0){
+            if (event.key === 'ArrowRight') {
+              setimagen('derecha.png')
+              setposicionX((posicionactualX)=>{
+
+              const nuevoValorX=posicionactualX
+
+              if(mazeData[(posicionactualY-1)][(nuevoValorX)]===' ' || mazeData[(posicionactualY-1)][(nuevoValorX)] ==='p'){
+                  setcontador(contador+1)
+                  return (nuevoValorX+1)
+                }
+                if(mazeData[(posicionactualY-1)][(nuevoValorX)]==='g'){
+                  window.sessionStorage.setItem("cuentaTotal", contador )
+                  return(   window.location.href = "completado.html")
+                }
+                else{
+                  return posicionactualX
+                }
+              })
+            }
+            if (event.key === 'ArrowLeft') {
+              setimagen('izquierda.png')
+              setposicionX((posicionactualX)=>{
+                const nuevoValorX=posicionactualX-2
+                if(mazeData[(posicionactualY-1)][(nuevoValorX)]===' ' || mazeData[(posicionactualY-1)][(nuevoValorX)] ==='p'){
+                  setcontador(contador+1)
+                  return nuevoValorX+1
+                }
+                if(mazeData[(posicionactualY-1)][(nuevoValorX)]==='g'){
+                  window.sessionStorage.setItem("cuentaTotal", contador )
+                  return(window.location.href = "completado.html")
+                }
+                else{
+                  return posicionactualX
+                }
+
+              })
+            }}
+
+            if (event.key === 'ArrowUp') {
+              setimagen('arriba.png')
+              setposicionY((posicionactualY)=>{
+                const nuevoValorY=posicionactualY-2
+                if(mazeData[(nuevoValorY)][posicionactualX-1]===' ' || mazeData[(nuevoValorY)][posicionactualX-1] === 'p'){
+                  setcontador(contador+1)
+                  return nuevoValorY+1
+                }
+                if(mazeData[(nuevoValorY)][posicionactualX-1]==='g'){
+                  window.sessionStorage.setItem("cuentaTotal", contador )
+                  return(window.location.href = "completado.html")
+                }
+                else{
+                  return posicionactualY
+                }
+              })
+            }
+
+            if (event.key === 'ArrowDown') {
+              setimagen('abajo.png')
+              setposicionY((posicionactualY)=>{
+                const nuevoValorY=posicionactualY
+                if(mazeData[(nuevoValorY)][posicionactualX-1]===' ' || mazeData[(nuevoValorY)][posicionactualX] ==='p'){
+                  setcontador(contador+1)
+                  return nuevoValorY+1
+                }
+                if(mazeData[(nuevoValorY)][posicionactualX-1]==='g'){
+                  window.sessionStorage.setItem("cuentaTotal", contador )
+                  return(window.location.href = "completado.html")
+                }
+                else{
+                  return posicionactualY
+                }
+              })
+            }
+          }
+          const enfocar = React.createRef()
+
+          React.useEffect(() => {
+            enfocar.current.focus()
+
+            fetch(`http://ubeje.xyz:3001/?type=json&w=${nivel}&h=${nivel}`)
+              .then(r => r.json())
+              .then(r => setMazeData(r))
+          }, [])
+
+          return (
+            <div style={rowStyles}>
+            <div style={estilo} tabIndex="4" onKeyDown={handleKeyDown}>
+              {mazeData.map((row) => {
+                return (
+                  <React.Fragment>
+                    {row.map((cell) => {
+                      switch(cell) {
+                        case 'p':
+                          return <Camino/>
+                        case 'g':
+                          return <Camino />
+                        case ' ':
+                          return <Camino />
+                        default:
+                          return <Pared />
+                      }
+                    })}
+                    </React.Fragment>
+                )
+              })}
+
+            </div>
+            <div style={estilo} tabIndex="4" onKeyDown={handleKeyDown} ref={enfocar}>
+              {mazeData.map((row) => {
+                return (
+                  <React.Fragment>
+                    {row.map((cell) => {
+                      switch(cell) {
+                        case 'p':
+                          return <Jugador posicionX={posicionactualX} posicionY={posicionactualY} imagenlink={imagenactual}/>
+                        case 'g':
+                          return <Meta />
+                        case ' ':
+                          return <div />
+                        default:
+                          return <div />
+                      }
+                    })}
+                    </React.Fragment>
+                )
+              })}
+
+            </div>
+            </div>
+          )
+        }
+
+        ReactDOM.render(
+            <Maze />,
+            htmlRoot
+        )
+        </script>
+    </body>
+</html>
