@@ -1,0 +1,58 @@
+
+<html>
+    <head>
+        <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    </head>
+    <body>
+      <link href="estilo.css" rel="stylesheet" type="text/css">
+
+        <div id="root"></div>
+
+        <script type="text/babel">
+            const htmlRoot = document.getElementById('root')
+            const Contenedor = () => {
+              const total = window.sessionStorage.getItem('cuentaTotal')
+
+  const estilo = {
+                display: 'flex',
+                flexDirection: 'column',
+                backgroundColor: '#CABFA3',
+                width: '100%',
+                height: '100%',
+                alignItems: 'center',
+                backgroundImage: 'url("fondofinal.jpg")',
+                padding: '0',
+                margin: '0',
+              }
+              const estilodos = {
+                borderRadius: '25px',
+              }
+              const estiloletra = {
+                color: 'blue',
+              }
+              return (
+    <div style={estilo}>
+      <h1 style={estiloletra}>Felicidades has completado el juego </h1>
+      <h3 style={estiloletra}>
+        {' '}
+        Total de movimientos:
+        {total}
+        {' '}
+      </h3>
+      <img style={estilodos} src="finaljuego.gif" alt="Juego Completado" width="40%" height="40%" />
+      <a style={estiloletra} href="index.html">¿Volver a Jugar? </a>
+    </div>
+  )
+            }
+
+            // eslint-disable-next-line no-undef
+            ReactDOM.render(
+              // eslint-disable-next-line react/react-in-jsx-scope
+              <Contenedor />,
+              htmlRoot,
+            )
+        </script>
+    </body>
+</html>

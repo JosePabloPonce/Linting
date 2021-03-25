@@ -1,0 +1,244 @@
+<html>
+    <head>
+        <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    </head>
+    <body>
+      <link href="estilo.css" rel="stylesheet" type="text/css">
+      <div id="root"></div>
+      <script type="text/babel">const htmlRoot = document.getElementById('root')
+
+        const Pared = () => {
+          const style = {
+            backgroundImage: 'url("pared.png")',
+            backgroundSize: '100% 100%',
+
+          }
+          // eslint-disable-next-line react/react-in-jsx-scope
+          return <div style={style} />
+        }
+
+        const Meta = () => {
+          const style = {
+            backgroundImage: 'url("meta.png")',
+            backgroundSize: '100% 100%',
+
+          }
+
+          // eslint-disable-next-line no-unused-vars
+          const estilodos = {
+            backgroundImage: 'url("piso.png")',
+            backgroundSize: '100% 100%',
+          }
+          return <div style={style} />
+        }
+
+        // eslint-disable-next-line react/prop-types
+        const Jugador = ({ posicionX, posicionY, imagenlink }) => {
+          const style = {
+            position: 'relative',
+            gridColumnStart: posicionX,
+            gridRowStart: posicionY,
+            backgroundSize: '100% 100%',
+            backgroundImage: `url(${imagenlink})`,
+          }
+          return <div style={style} />
+        }
+
+        const Camino = () => {
+          const style = {
+            backgroundImage: 'url("piso.png")',
+            backgroundSize: '100% 100%',
+          }
+          // eslint-disable-next-line react/react-in-jsx-scope
+          return <div style={style} />
+        }
+
+        const Maze = () => {
+          const nivel = window.sessionStorage.getItem('nivelfacil')
+
+          const estilo = {
+            width: '75%',
+            height: '75%',
+            display: 'grid',
+            gridTemplateRows: `repeat( ${nivel * 2 + 1}, auto)`,
+            gridTemplateColumns: `repeat( ${nivel * 3 + 1}, auto )`,
+            position: 'absolute',
+          }
+
+          const rowStyles = {
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            backgroundImage: 'url("fondojuego.jpg")',
+            backgroundSize: '100% 100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }
+
+          // eslint-disable-next-line no-undef
+          const [mazeData, setMazeData] = React.useState([])
+          // eslint-disable-next-line no-undef
+          const [imagenactual, setimagen] = React.useState('estadoinicial.png')
+          // eslint-disable-next-line no-undef
+          const [posicionactualX, setposicionX] = React.useState(2)
+          // eslint-disable-next-line no-undef
+          const [posicionactualY, setposicionY] = React.useState(2)
+          // eslint-disable-next-line no-undef
+          const [contador, setcontador] = React.useState(0)
+
+          const handleKeyDown = (event) => {
+            // eslint-disable-next-line eqeqeq
+            if (mazeData.length != 0) {
+              if (event.key === 'ArrowRight') {
+                setimagen('derecha.png')
+                // eslint-disable-next-line no-shadow
+                setposicionX((posicionactualX) => {
+                  const nuevoValorX = posicionactualX
+
+                  if (mazeData[(posicionactualY - 1)][(nuevoValorX)] === ' ' || mazeData[(posicionactualY - 1)][(nuevoValorX)] === 'p') {
+                    setcontador(contador + 1)
+                    return (nuevoValorX + 1)
+                  }
+                  // eslint-disable-next-line indent
+          // eslint-disable-next-line indent
+          if (mazeData[(posicionactualY - 1)][(nuevoValorX)] === 'g') {
+                    window.sessionStorage.setItem('cuentaTotal', contador)
+                    // eslint-disable-next-line no-return-assign
+                    return (window.location.href = 'completado.html')
+                  }
+        
+                  return posicionactualX
+                })
+              }
+              // eslint-disable-next-line indent
+            if (event.key === 'ArrowLeft') {
+                setimagen('izquierda.png')
+                // eslint-disable-next-line no-shadow
+                setposicionX((posicionactualX) => {
+                  const nuevoValorX = posicionactualX - 2
+                  if (mazeData[(posicionactualY - 1)][(nuevoValorX)] === ' ' || mazeData[(posicionactualY - 1)][(nuevoValorX)] === 'p') {
+                    setcontador(contador + 1)
+                    return nuevoValorX + 1
+                  }
+                  if (mazeData[(posicionactualY - 1)][(nuevoValorX)] === 'g') {
+                    window.sessionStorage.setItem('cuentaTotal', contador)
+                    // eslint-disable-next-line no-return-assign
+                    return (window.location.href = 'completado.html')
+                  }
+                  return posicionactualX
+                })
+              }
+    }
+
+            if (event.key === 'ArrowUp') {
+              setimagen('arriba.png')
+              // eslint-disable-next-line no-shadow
+              setposicionY((posicionactualY) => {
+                const nuevoValorY = posicionactualY - 2
+                if (mazeData[(nuevoValorY)][posicionactualX - 1] === ' ' || mazeData[(nuevoValorY)][posicionactualX - 1] === 'p') {
+                  setcontador(contador + 1)
+                  return nuevoValorY + 1
+                }
+                if (mazeData[(nuevoValorY)][posicionactualX - 1] === 'g') {
+                  window.sessionStorage.setItem('cuentaTotal', contador)
+                  // eslint-disable-next-line no-return-assign
+                  return (window.location.href = 'completado.html')
+                }
+                return posicionactualY
+              })
+            }
+
+            if (event.key === 'ArrowDown') {
+              setimagen('abajo.png')
+              // eslint-disable-next-line no-shadow
+              setposicionY((posicionactualY) => {
+                const nuevoValorY = posicionactualY
+                if (mazeData[(nuevoValorY)][posicionactualX - 1] === ' ' || mazeData[(nuevoValorY)][posicionactualX] === 'p') {
+                  setcontador(contador + 1)
+                  return nuevoValorY + 1
+                }
+                // eslint-disable-next-line keyword-spacing
+                if(mazeData[(nuevoValorY)][posicionactualX - 1] === 'g') {
+                  window.sessionStorage.setItem('cuentaTotal', contador)
+                  // eslint-disable-next-line no-return-assign
+                  return (window.location.href = 'completado.html')
+                }
+        
+                return posicionactualY
+      })
+            }
+          }
+          const enfocar = React.createRef()
+
+          React.useEffect(() => {
+            enfocar.current.focus()
+
+            fetch(`http://ubeje.xyz:3001/?type=json&w=${nivel}&h=${nivel}`)
+              .then((r) => r.json())
+              .then((r) => setMazeData(r))
+          }, [])
+
+          return (
+            <div style={rowStyles}>
+              <div style={estilo} tabIndex={-1} onKeyDown={handleKeyDown} role="button">
+                {mazeData.map((row) => (
+                  <>
+                    {row.map((cell) => {
+                      switch (cell) {
+                        case 'p':
+                          return <Camino />
+                        case 'g':
+                          return <Camino />
+                        case ' ':
+                          return <Camino />
+                        default:
+                          return <Pared />
+                      }
+                    })}
+                  </>
+                ))}
+
+              </div>
+              <div style={estilo} tabIndex={-1} onKeyDown={handleKeyDown} ref={enfocar} role="button">
+                {mazeData.map((row) => (
+                  <>
+                    {row.map((cell) => {
+                      switch (cell) {
+                        case 'p':
+                          // eslint-disable-next-line max-len
+                        // eslint-disable-next-line react/react-in-jsx-scope
+                        // eslint-disable-next-line max-len
+                        // eslint-disable-next-line react/react-in-jsx-scope
+                        // eslint-disable-next-line max-len
+                          return <Jugador posicionX={posicionactualX} posicionY={posicionactualY} imagenlink={imagenactual} />
+                        case 'g':
+                        // eslint-disable-next-line react/react-in-jsx-scope
+                          return <Meta />
+                        case ' ':
+                        // eslint-disable-next-line react/react-in-jsx-scope
+                          return <div />
+                        default:
+                        // eslint-disable-next-line react/react-in-jsx-scope
+                          return <div />
+                      }
+                    })}
+                  </>
+                ))}
+
+              </div>
+            </div>
+          )
+        }
+
+        // eslint-disable-next-line no-undef
+        ReactDOM.render(
+          // eslint-disable-next-line react/react-in-jsx-scope
+          <Maze />,
+          htmlRoot,
+        )
+        </script>
+    </body>
+</html>
